@@ -1,5 +1,8 @@
 # MAC-OCR-CLI
-![OCR START](images/ocr-start.png)
+<p float="left">
+  <img src="images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
+  <img src="images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
+</p>
 MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS. 
 
 It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experience directly from your terminal or through a local API server.
