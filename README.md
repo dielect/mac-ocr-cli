@@ -1,4 +1,4 @@
-<h1 align="center">MAC-OCR-CLI</h1>
+<h1 align="center">Mac-OCR-CLI</h1>
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/mac-ocr-cli.svg" alt="PyPI version">
