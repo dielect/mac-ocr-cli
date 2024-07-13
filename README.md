@@ -1,4 +1,5 @@
 <h1 align="center">Mac-OCR-CLI</h1>
+<p align="center">A powerful OCR tool for macOS - from terminal to API serve</p>
 
 <p align="center">
   <img src="https://img.shields.io/pypi/v/mac-ocr-cli.svg" alt="PyPI version">
@@ -9,6 +10,14 @@
 MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS. 
 
 It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experience directly from your terminal or through a local API server.
+
+## Table of Contents
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -43,7 +52,7 @@ It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experien
   <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
 </p>
 
-```shell
+```sh
 mac-ocr file <your_image_path>
 ```
 
@@ -81,7 +90,7 @@ curl --location 'http://127.0.0.1:8080/ocr' \
 }'
 ```
 Replace `your_image_path` with your actual image path.
-```shell
+```sh
 curl --location 'http://127.0.0.1:8080/ocr' \
 --header 'Authorization: 123456' \
 --header 'Content-Type: application/json' \
@@ -130,6 +139,18 @@ The server will respond with the OCR results in JSON format:
 ```
 
 Note: The OCR results are returned in reverse order (bottom to top) of the original image.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Issue**: OCR server fails to start
+   **Solution**: Ensure you have the necessary permissions and that the specified port is not in use.
+
+2. **Issue**: OCR results are inaccurate
+   **Solution**: Check that your image is clear and well-lit. Try preprocessing the image to improve contrast.
+
+For more troubleshooting tips, please refer to our [FAQ](link_to_faq) or open an issue on GitHub.
 
 ## Contributing
 
