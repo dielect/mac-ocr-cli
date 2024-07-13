@@ -1,7 +1,7 @@
 # MAC-OCR-CLI
 <p float="left">
-  <img src="images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
-  <img src="images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
+  <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
+  <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
 </p>
 MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS. 
 
@@ -54,16 +54,27 @@ Available options:
 - `--port` or `-p`: Set the server port (default: 8000)
 - `--host` or `-h`: Set the server host (default: 0.0.0.0)
 - `--log-level` or `-l`: Set the log level (default: info)
+- `--token` or `-t`: Set the token (default: None)
 
 ### Performing OCR
 
 Once the server is running, you can perform OCR on an image using a POST request to the `/ocr` endpoint:
 
 ```sh
-curl --location 'http://127.0.0.1:8000/ocr' \
+curl --location 'http://127.0.0.1:8080/ocr' \
+--header 'Authorization: 123456' \
 --header 'Content-Type: application/json' \
 --data '{
-    "image":"<base64_encoded_image_data>"
+    "image_path":"your_image_path"
+}'
+```
+Replace `your_image_path` with your actual image path.
+```shell
+curl --location 'http://127.0.0.1:8080/ocr' \
+--header 'Authorization: 123456' \
+--header 'Content-Type: application/json' \
+--data '{
+    "image_base64":"base64_encoded_image_data"
 }'
 ```
 
@@ -73,7 +84,36 @@ The server will respond with the OCR results in JSON format:
 
 ```json
 {
-    "result": ["Line 3 text", "Line 2 text", "Line 1 text"]
+    "code": 200,
+    "message": "success",
+    "data": {
+        "annotations": [
+            [
+                "INTP女",
+                1.0,
+                [
+                    0.15561960485546392,
+                    0.8036144575052732,
+                    0.6772334149494265,
+                    0.1295751962317041
+                ]
+            ],
+            [
+                "为什么罕见",
+                1.0,
+                [
+                    0.08933718939980283,
+                    0.6463855410040755,
+                    0.8213256246225845,
+                    0.11870066631271181
+                ]
+            ]
+        ],
+        "fullText": [
+            "INTP女",
+            "为什么罕见"
+        ]
+    }
 }
 ```
 
