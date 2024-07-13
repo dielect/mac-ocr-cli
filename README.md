@@ -39,18 +39,23 @@ It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experien
 
 ## Usage
 
+### Starting the OCR CLI
+```shell
+mac-ocr file <your_image_path>
+```
+
 ### Starting the OCR Server
 
 To start the OCR server with default settings:
 
 ```sh
-mac-ocr
+mac-ocr server
 ```
 
 You can customize the server settings using command-line options:
 
 ```sh
-mac-ocr --port 8080 --host 127.0.0.1 --log-level debug
+mac-ocr server --port 8080 --host 127.0.0.1 --log-level debug
 ```
 
 Available options:
@@ -69,7 +74,7 @@ curl --location 'http://127.0.0.1:8080/ocr' \
 --header 'Authorization: 123456' \
 --header 'Content-Type: application/json' \
 --data '{
-    "image_path":"your_image_path"
+    "image_path":"<your_image_path>"
 }'
 ```
 Replace `your_image_path` with your actual image path.
@@ -78,7 +83,7 @@ curl --location 'http://127.0.0.1:8080/ocr' \
 --header 'Authorization: 123456' \
 --header 'Content-Type: application/json' \
 --data '{
-    "image_base64":"base64_encoded_image_data"
+    "image_base64":"<base64_encoded_image_data>"
 }'
 ```
 
