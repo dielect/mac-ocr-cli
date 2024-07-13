@@ -1,4 +1,5 @@
 # MAC-OCR-CLI
+![PyPI version](https://img.shields.io/pypi/v/mac-ocr-cli.svg)
 <p float="left">
   <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
   <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
