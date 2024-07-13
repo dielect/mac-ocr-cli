@@ -16,7 +16,7 @@ from macocr_cli.utils import merge_text_by_line, beautify_ocr_result, console
 app = FastAPI()
 cli = typer.Typer()
 
-VERSION = "0.2.7"
+VERSION = "0.2.8"
 # 全局变量用于存储 token
 AUTH_TOKEN = None
 
