@@ -3,9 +3,8 @@
 <p align="center">
   <img src="https://img.shields.io/pypi/v/mac-ocr-cli.svg" alt="PyPI version">
 </p>
-<p float="left">
+<p align="center">
   <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
-  <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
 </p>
 MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS. 
 
@@ -40,6 +39,10 @@ It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experien
 ## Usage
 
 ### Starting the OCR CLI
+<p>
+  <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-result.png" alt="OCR RESULT" width="400" style="vertical-align: middle;"/>
+</p>
+
 ```shell
 mac-ocr file <your_image_path>
 ```
