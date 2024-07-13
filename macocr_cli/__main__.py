@@ -1,6 +1,7 @@
 import base64
 import io
 import os
+from typing import Optional
 
 import typer
 import uvicorn
@@ -16,7 +17,7 @@ from macocr_cli.utils import merge_text_by_line, beautify_ocr_result, console
 app = FastAPI()
 cli = typer.Typer()
 
-VERSION = "0.2.8"
+VERSION = "0.2.9"
 # 全局变量用于存储 token
 AUTH_TOKEN = None
 
@@ -24,7 +25,7 @@ AUTH_TOKEN = None
 # 修改验证函数以使用全局 token
 def verify_token(request: Request):
     if AUTH_TOKEN is None:
-        # 如果没有设置 token，则跳过验证
+        # if no token is set, skip authentication
         return None
     auth_header = request.headers.get("Authorization")
     if not auth_header:
@@ -68,7 +69,7 @@ class ImageInput(BaseModel):
 @app.post("/ocr")
 async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token)):
     if image_input.image_path is None and image_input.image_base64 is None:
-        raise HTTPException(status_code=400, detail="必须提供image_path或image_base64中的一个")
+        raise HTTPException(status_code=400, detail="Either 'image_path' or 'image_base64' must be provided")
 
     try:
         if image_input.image_path:
@@ -97,7 +98,7 @@ async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token
             }
         }
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"处理图片时出错: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
 
 def ocr_file(file_path: str):
@@ -107,26 +108,71 @@ def ocr_file(file_path: str):
     beautify_ocr_result(result)
 
 
+def version_callback(value: bool):
+    if value:
+        typer.echo(f"v{VERSION}")
+        raise typer.Exit()
+
+
+@cli.callback()
+def main(version: Optional[bool] = typer.Option(
+    None, "--version", "-v",
+    help="show version information",
+    callback=version_callback,
+    is_eager=True,
+    is_flag=True
+)):
+    """
+        MAC-OCR-CLI: A powerful OCR command-line tool for macOS.
+
+        This tool leverages macOS native OCR capabilities to provide
+        high-accuracy text recognition from images. It offers both
+        a simple command-line interface for quick OCR tasks and
+        a server mode for integrating OCR capabilities into other applications.
+     """
+    pass
+
+
 @cli.command()
-def file(file_path: str):
-    """直接对文件进行 OCR"""
+def file(file_path: str = typer.Argument(..., help="Path to the image file for OCR processing")):
+    """
+    Perform OCR on a specified image file.
+
+    This command takes an image file as input, performs Optical Character Recognition (OCR),
+    and outputs the recognized text. It supports common image formats such as PNG, JPEG, and TIFF.
+
+    The OCR process uses macOS native OCR capabilities for high accuracy.
+
+    Example:
+        mac-ocr file /path/to/your/image.png
+    """
     ocr_file(file_path)
 
 
 @cli.command()
 def server(
-        port: int = typer.Option(8000, "--port", "-p", help="服务器运行的端口"),
-        host: str = typer.Option("0.0.0.0", "--host", "-h", help="服务器运行的主机地址"),
-        log_level: str = typer.Option("info", "--log-level", "-l", help="日志级别"),
-        token: str = typer.Option(None, "--token", "-t", help="用于认证的 token")
+        port: int = typer.Option(8000, "--port", "-p", help="Port on which the server will run"),
+        host: str = typer.Option("0.0.0.0", "--host", "-h", help="Host address to bind the server"),
+        log_level: str = typer.Option("info", "--log-level", "-l",
+                                      help="Logging level (debug, info, warning, error, critical)"),
+        token: str = typer.Option(None, "--token", "-t", help="Authentication token for API access")
 ):
     """
-    启动具有指定配置的 OCR 服务器。
+        Start the OCR server with specified configuration.
+
+        This command launches a FastAPI-based OCR server that can process images via HTTP requests.
+        The server utilizes macOS native OCR capabilities for high-accuracy text recognition.
+
+        You can customize the server's port, host, logging level, and set an authentication token.
+
+        Examples:
+            mac-ocr server
+            mac-ocr server --port 9000 --host 127.0.0.1 --log-level debug --token your_secret_token
     """
     global AUTH_TOKEN
     AUTH_TOKEN = token
 
-    start_message = f"正在启动 OCR 服务器，地址：[bold cyan]{host}[/bold cyan]，端口：[bold green]{port}[/bold green]"
+    start_message = f"Starting OCR server on:[bold cyan]{host}[/bold cyan]，port：[bold green]{port}[/bold green]"
     console.print(Panel(start_message, title=f"mac ocr v{VERSION}", expand=False, border_style="bold magenta"))
 
     uvicorn.run(app, host=host, port=port, log_level=log_level)
