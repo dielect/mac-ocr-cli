@@ -100,8 +100,21 @@ async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token
         raise HTTPException(status_code=400, detail=f"处理图片时出错: {str(e)}")
 
 
+def ocr_file(file_path: str):
+    image = Image.open(file_path)
+    annotations = ocrmac.OCR(image, language_preference=["zh-Hans"]).recognize()
+    result = merge_text_by_line(annotations)
+    beautify_ocr_result(result)
+
+
 @cli.command()
-def start_server(
+def file(file_path: str):
+    """直接对文件进行 OCR"""
+    ocr_file(file_path)
+
+
+@cli.command()
+def server(
         port: int = typer.Option(8000, "--port", "-p", help="服务器运行的端口"),
         host: str = typer.Option("0.0.0.0", "--host", "-h", help="服务器运行的主机地址"),
         log_level: str = typer.Option("info", "--log-level", "-l", help="日志级别"),
