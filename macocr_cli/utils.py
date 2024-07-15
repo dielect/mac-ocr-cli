@@ -1,8 +1,10 @@
-from rich.text import Text
 from datetime import datetime
+
 from rich.console import Console
+from rich.text import Text
 
 console = Console()
+
 
 def get_line_number(bbox, threshold=0.05):
     """

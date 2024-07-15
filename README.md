@@ -7,7 +7,7 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/dielect/mac-ocr-cli/master/images/ocr-start.png" alt="OCR START" width="400" style="vertical-align: middle;"/>
 </p>
-MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS. 
+MAC-OCR-CLI is a powerful command-line interface tool for Optical Character Recognition (OCR) on macOS.
 
 It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experience directly from your terminal or through a local API server.
 
@@ -22,7 +22,7 @@ It leverages `FastAPI`, `ocrmac`, and `Typer` to provide a seamless OCR experien
 ## Features
 
 - Easy-to-use CLI for starting an OCR server
-- RESTful API endpoint for OCR tasks
+- Restful API endpoint for OCR tasks.
 - Built on FastAPI for high performance
 - Utilizes ocrmac for accurate OCR on macOS
 - Supports base64 encoded image input
