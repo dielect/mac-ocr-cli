@@ -5,8 +5,63 @@ from rich.text import Text
 from rich.panel import Panel
 from rich.table import Table
 from rich.box import ROUNDED
+from rich.align import Align
 
 console = Console()
+
+
+def show_startup_banner(version: str = "0.2.9", mode: str = "CLI"):
+    """
+    Display a beautiful ASCII art logo and startup banner.
+
+    Parameters:
+    version (str): Application version number.
+    mode (str): Mode of operation ('CLI', 'Server', or 'File').
+
+    Returns:
+    None: Directly prints the banner.
+    """
+    # ASCII Art Logo
+    logo = """
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║   ███╗   ███╗ █████╗  ██████╗      ██████╗  ██████╗██████╗   ║
+║   ████╗ ████║██╔══██╗██╔════╝     ██╔═══██╗██╔════╝██╔══██╗  ║
+║   ██╔████╔██║███████║██║     █████╗██║   ██║██║     ██████╔╝  ║
+║   ██║╚██╔╝██║██╔══██║██║     ╚════╝██║   ██║██║     ██╔══██╗  ║
+║   ██║ ╚═╝ ██║██║  ██║╚██████╗      ╚██████╔╝╚██████╗██║  ██║  ║
+║   ╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝       ╚═════╝  ╚═════╝╚═╝  ╚═╝  ║
+║                                                               ║
+║                 🍎 macOS Native OCR Tool 🔍                   ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+"""
+
+    # Create styled logo text
+    logo_text = Text(logo, style="bold bright_cyan")
+
+    # Create info panel
+    info_lines = [
+        f"[bold bright_yellow]Version:[/bold bright_yellow] [bright_white]{version}[/bright_white]",
+        f"[bold bright_yellow]Mode:[/bold bright_yellow] [bright_green]{mode}[/bright_green]",
+        f"[bold bright_yellow]Platform:[/bold bright_yellow] [bright_magenta]macOS[/bright_magenta]",
+        "",
+        "[dim italic]Powered by ocrmac • FastAPI • Rich[/dim italic]"
+    ]
+
+    info_panel = Panel(
+        "\n".join(info_lines),
+        title="[bold bright_magenta]⚡ System Info ⚡[/bold bright_magenta]",
+        border_style="bright_blue",
+        box=ROUNDED,
+        padding=(1, 2)
+    )
+
+    # Print everything
+    console.print("\n")
+    console.print(logo_text)
+    console.print(Align.center(info_panel))
+    console.print("\n")
 
 
 def get_line_number(bbox, threshold=0.05):

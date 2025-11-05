@@ -11,8 +11,9 @@ from fastapi.responses import JSONResponse
 from ocrmac import ocrmac
 from pydantic import BaseModel
 from rich.panel import Panel
+from rich.box import ROUNDED
 
-from macocr_cli.utils import merge_text_by_line, beautify_ocr_result, console
+from macocr_cli.utils import merge_text_by_line, beautify_ocr_result, console, show_startup_banner
 
 app = FastAPI()
 cli = typer.Typer()
@@ -102,6 +103,8 @@ async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token
 
 
 def ocr_file(file_path: str):
+    show_startup_banner(version=VERSION, mode="File OCR")
+    console.print(f"[bold bright_cyan]📄 Processing image:[/bold bright_cyan] [bright_white]{file_path}[/bright_white]\n")
     image = Image.open(file_path)
     annotations = ocrmac.OCR(image, language_preference=["zh-Hans"]).recognize()
     result = merge_text_by_line(annotations)
@@ -172,8 +175,27 @@ def server(
     global AUTH_TOKEN
     AUTH_TOKEN = token
 
-    start_message = f"Starting OCR server on:[bold cyan]{host}[/bold cyan]，port：[bold green]{port}[/bold green]"
-    console.print(Panel(start_message, title=f"mac ocr v{VERSION}", expand=False, border_style="bold magenta"))
+    # Show startup banner
+    show_startup_banner(version=VERSION, mode="Server Mode")
+
+    # Server configuration info
+    server_info = [
+        f"[bold bright_yellow]Host:[/bold bright_yellow] [bold cyan]{host}[/bold cyan]",
+        f"[bold bright_yellow]Port:[/bold bright_yellow] [bold green]{port}[/bold green]",
+        f"[bold bright_yellow]Log Level:[/bold bright_yellow] [bright_white]{log_level}[/bright_white]",
+        f"[bold bright_yellow]Auth:[/bold bright_yellow] [{'bright_green]✓ Enabled' if token else 'dim]✗ Disabled'}[/]",
+    ]
+
+    server_panel = Panel(
+        "\n".join(server_info),
+        title="[bold bright_magenta]🚀 Server Configuration 🚀[/bold bright_magenta]",
+        border_style="bright_green",
+        box=ROUNDED,
+        padding=(1, 2)
+    )
+
+    console.print(server_panel)
+    console.print("[bold bright_green]✨ Server starting...[/bold bright_green]\n")
 
     uvicorn.run(app, host=host, port=port, log_level=log_level)
 
