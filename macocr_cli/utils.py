@@ -66,7 +66,7 @@ def beautify_ocr_result(result):
         padding=(0, 1),
         title="[bold bright_magenta]✨ OCR 识别结果 ✨[/bold bright_magenta]",
         title_style="bold bright_magenta",
-        caption=f"[dim italic]识别时间: {current_time}[/dim italic]",
+        caption=f"[dim italic] 识别时间：{current_time}[/dim italic]",
         caption_style="dim cyan"
     )
 

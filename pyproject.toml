@@ -1,0 +1,13 @@
+[project]
+name = "mac-ocr-cli"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.121.0",
+    "ocrmac>=1.0.0",
+    "pillow>=12.0.0",
+    "typer>=0.20.0",
+    "uvicorn>=0.38.0",
+]

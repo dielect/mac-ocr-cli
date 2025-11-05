@@ -1,6 +1,7 @@
 import base64
 import io
 import os
+import sys
 from typing import Optional
 
 import typer
@@ -11,6 +12,10 @@ from fastapi.responses import JSONResponse
 from ocrmac import ocrmac
 from pydantic import BaseModel
 from rich.panel import Panel
+
+
+# Add the parent directory to sys.path to allow importing macocr_cli as a package
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from macocr_cli.utils import merge_text_by_line, beautify_ocr_result, console
 
@@ -52,7 +57,7 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
-# 定义HTTPException处理器
+# 定义 HTTPException 处理器
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
@@ -69,18 +74,17 @@ class ImageInput(BaseModel):
 @app.post("/ocr")
 async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token)):
     if image_input.image_path is None and image_input.image_base64 is None:
-        raise HTTPException(status_code=400, detail="Either 'image_path' or 'image_base64' must be provided")
+        raise HTTPException(
+            status_code=400,
+            detail="Either 'image_path' or 'image_base64' must be provided",
+        )
 
     try:
         if image_input.image_path:
             if os.path.isfile(image_input.image_path):
                 image = Image.open(image_input.image_path)
             else:
-                return {
-                    "code": 400,
-                    "message": "File not found",
-                    "data": None
-                }
+                return {"code": 400, "message": "File not found", "data": None}
         else:
             image_bytes = base64.b64decode(image_input.image_base64)
             image = Image.open(io.BytesIO(image_bytes))
@@ -92,10 +96,7 @@ async def perform_ocr(image_input: ImageInput, token: str = Depends(verify_token
         return {
             "code": 200,
             "message": "success",
-            "data": {
-                "annotations": annotations,
-                "fullText": result
-            }
+            "data": {"annotations": annotations, "fullText": result},
         }
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
@@ -115,26 +116,34 @@ def version_callback(value: bool):
 
 
 @cli.callback()
-def main(version: Optional[bool] = typer.Option(
-    None, "--version", "-v",
-    help="show version information",
-    callback=version_callback,
-    is_eager=True,
-    is_flag=True
-)):
+def main(
+    version: Optional[bool] = typer.Option(
+        None,
+        "--version",
+        "-v",
+        help="show version information",
+        callback=version_callback,
+        is_eager=True,
+        is_flag=True,
+    ),
+):
     """
-        MAC-OCR-CLI: A powerful OCR command-line tool for macOS.
+    MAC-OCR-CLI: A powerful OCR command-line tool for macOS.
 
-        This tool leverages macOS native OCR capabilities to provide
-        high-accuracy text recognition from images. It offers both
-        a simple command-line interface for quick OCR tasks and
-        a server mode for integrating OCR capabilities into other applications.
-     """
+    This tool leverages macOS native OCR capabilities to provide
+    high-accuracy text recognition from images. It offers both
+    a simple command-line interface for quick OCR tasks and
+    a server mode for integrating OCR capabilities into other applications.
+    """
     pass
 
 
 @cli.command()
-def file(file_path: str = typer.Argument(..., help="Path to the image file for OCR processing")):
+def file(
+    file_path: str = typer.Argument(
+        ..., help="Path to the image file for OCR processing"
+    ),
+):
     """
     Perform OCR on a specified image file.
 
@@ -151,32 +160,49 @@ def file(file_path: str = typer.Argument(..., help="Path to the image file for O
 
 @cli.command()
 def server(
-        port: int = typer.Option(8000, "--port", "-p", help="Port on which the server will run"),
-        host: str = typer.Option("0.0.0.0", "--host", "-h", help="Host address to bind the server"),
-        log_level: str = typer.Option("info", "--log-level", "-l",
-                                      help="Logging level (debug, info, warning, error, critical)"),
-        token: str = typer.Option(None, "--token", "-t", help="Authentication token for API access")
+    port: int = typer.Option(
+        8000, "--port", "-p", help="Port on which the server will run"
+    ),
+    host: str = typer.Option(
+        "0.0.0.0", "--host", "-h", help="Host address to bind the server"
+    ),
+    log_level: str = typer.Option(
+        "info",
+        "--log-level",
+        "-l",
+        help="Logging level (debug, info, warning, error, critical)",
+    ),
+    token: str = typer.Option(
+        None, "--token", "-t", help="Authentication token for API access"
+    ),
 ):
     """
-        Start the OCR server with specified configuration.
+    Start the OCR server with specified configuration.
 
-        This command launches a FastAPI-based OCR server that can process images via HTTP requests.
-        The server utilizes macOS native OCR capabilities for high-accuracy text recognition.
+    This command launches a FastAPI-based OCR server that can process images via HTTP requests.
+    The server utilizes macOS native OCR capabilities for high-accuracy text recognition.
 
-        You can customize the server's port, host, logging level, and set an authentication token.
+    You can customize the server's port, host, logging level, and set an authentication token.
 
-        Examples:
-            mac-ocr server
-            mac-ocr server --port 9000 --host 127.0.0.1 --log-level debug --token your_secret_token
+    Examples:
+        mac-ocr server
+        mac-ocr server --port 9000 --host 127.0.0.1 --log-level debug --token your_secret_token
     """
     global AUTH_TOKEN
     AUTH_TOKEN = token
 
-    start_message = f"Starting OCR server on:[bold cyan]{host}[/bold cyan]，port：[bold green]{port}[/bold green]"
-    console.print(Panel(start_message, title=f"mac ocr v{VERSION}", expand=False, border_style="bold magenta"))
+    start_message = f"Starting OCR server on:[bold cyan]{host}[/bold cyan], port:[bold green]{port}[/bold green]"
+    console.print(
+        Panel(
+            start_message,
+            title=f"mac ocr v{VERSION}",
+            expand=False,
+            border_style="bold magenta",
+        )
+    )
 
     uvicorn.run(app, host=host, port=port, log_level=log_level)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     cli()
